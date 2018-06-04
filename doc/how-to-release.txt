@@ -1,3 +1,6 @@
+Reference:
+https://stackoverflow.com/questions/28846802/how-to-manually-publish-jar-to-maven-central
+
 1) Create your Jira account :
 https://issues.sonatype.org/secure/Signup!default.jspa
 
