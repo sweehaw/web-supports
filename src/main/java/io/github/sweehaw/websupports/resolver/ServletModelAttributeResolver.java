@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.sweehaw.websupports.annotation.JsonArg;
+import io.github.sweehaw.websupports.annotation.JsonHeader;
 import io.github.sweehaw.websupports.util.CommUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +30,6 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String LAST_MODIFIED_USER = "last_modified_user";
-    private static final String HEADER_ACCESS_USER = "accessUser";
     private static final String JSONBODY_ATTRIBUTE = "JSON_REQUEST_BODY";
 
     @Override
@@ -56,7 +55,7 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
                 this.setPathVariable(f, object, pathVariable);
                 this.setParameterValue(f, object, webRequest);
                 this.setServletRequest(f, object, webRequest);
-                this.setAccessUser(f, object, webRequest);
+                this.setHeaderValue(f, object, webRequest);
             }
 
             return object;
@@ -126,19 +125,15 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
         }
     }
 
-    private void setAccessUser(Field f, Object o, NativeWebRequest nativeWebRequest) throws Exception {
+    private void setHeaderValue(Field f, Object o, NativeWebRequest nativeWebRequest) throws Exception {
 
-        JsonProperty jsonProperty = f.getAnnotation(JsonProperty.class);
+        JsonHeader jsonHeader = f.getAnnotation(JsonHeader.class);
 
-        if (jsonProperty != null) {
-
-            String jsonKey = jsonProperty.value();
-
-            if (jsonKey.contains(LAST_MODIFIED_USER)) {
-                String accessUser = nativeWebRequest.getHeader(HEADER_ACCESS_USER);
-                f.setAccessible(true);
-                f.set(o, accessUser);
-            }
+        if (jsonHeader != null) {
+            String jsonKey = jsonHeader.value();
+            String accessUser = nativeWebRequest.getHeader(jsonKey);
+            f.setAccessible(true);
+            f.set(o, accessUser);
         }
     }
 
