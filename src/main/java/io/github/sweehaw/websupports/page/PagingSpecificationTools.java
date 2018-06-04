@@ -1,5 +1,6 @@
 package io.github.sweehaw.websupports.page;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,10 +15,11 @@ import java.util.Map;
 /**
  * @author sweehaw
  */
+@RequiredArgsConstructor
 public class PagingSpecificationTools {
 
+    private final HashMap<String, Object> map;
     private Specification<Object> specification;
-    private HashMap<String, Object> map;
 
     @SuppressWarnings("unchecked")
     public Predicate[] getPredicateList(Root<Object> root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
