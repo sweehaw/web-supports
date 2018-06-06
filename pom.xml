@@ -12,7 +12,7 @@
 
     <groupId>io.github.sweehaw</groupId>
     <artifactId>web-supports</artifactId>
-    <version>0.0.9</version>
+    <version>0.0.10</version>
     <packaging>jar</packaging>
     <url>https://github.com/sweehaw/web-supports</url>
 
@@ -46,24 +46,28 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.0.2.RELEASE</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
             <version>2.0.2.RELEASE</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>2.0.2.RELEASE</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.11</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -71,24 +75,28 @@
             <artifactId>lombok</artifactId>
             <version>1.18.0</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.7</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.11.232</version>
+            <artifactId>aws-java-sdk-dynamodb</artifactId>
+            <version>1.11.341</version>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
