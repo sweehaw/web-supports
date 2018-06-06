@@ -18,19 +18,19 @@ public class DynamoDbLogbackAppender extends UnsynchronizedAppenderBase<ILogging
     private AbstractDaemonAppender<ILoggingEvent> appender;
     private Layout<ILoggingEvent> layout;
 
-    private String dynamodbCredentialFilePath;
-    private String dynamodbEndpoint;
-    private String outputTableName;
+    private String filePath;
+    private String endPoint;
+    private String tableName;
     private String instanceName;
 
     private int maxQueueSize;
 
     private boolean initializeAppender() {
         try {
-            PropertiesCredentials credentials = new PropertiesCredentials(getClass().getClassLoader().getResourceAsStream(dynamodbCredentialFilePath));
+            PropertiesCredentials credentials = new PropertiesCredentials(getClass().getClassLoader().getResourceAsStream(filePath));
             AmazonDynamoDBClient dynamoClient = new AmazonDynamoDBClient(credentials);
-            dynamoClient.setEndpoint(this.dynamodbEndpoint);
-            this.appender = new DynamoDbAbstractDaemonAppender(this.outputTableName, this.instanceName, dynamoClient, this.layout, this.maxQueueSize);
+            dynamoClient.setEndpoint(this.endPoint);
+            this.appender = new DynamoDbAbstractDaemonAppender(this.tableName, this.instanceName, dynamoClient, this.layout, this.maxQueueSize);
             return true;
         } catch (Exception e) {
             System.err.println("Could not initialize " + DynamoDbLogbackAppender.class.getCanonicalName() + " ( will try to initialize again later ): " + e);
