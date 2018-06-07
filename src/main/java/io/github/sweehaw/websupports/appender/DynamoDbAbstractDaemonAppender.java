@@ -50,7 +50,7 @@ public class DynamoDbAbstractDaemonAppender extends AbstractDaemonAppender<ILogg
 
         String level = rawData.getLevel().levelStr;
         String date = new SimpleDateFormat("yyyyMMddHHmmss").format(loggerDate);
-        String id = date + "-" + RandomStringUtils.randomAlphanumeric(8);
+        String id = date + "-" + System.nanoTime();
         String ipAdd = "";
 
         try {
