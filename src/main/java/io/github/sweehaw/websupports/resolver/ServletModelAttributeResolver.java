@@ -19,8 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 
 /**
@@ -50,7 +49,11 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
             HashMap<String, String> pathVariable = this.getPathVariable(webRequest);
             object = this.getRequestBody(object, parameter, webRequest);
 
-            for (Field f : object.getClass().getDeclaredFields()) {
+            List<Field> fields = new ArrayList<>(Arrays.asList(c.getDeclaredFields()));
+            List<Field> superFields = new ArrayList<>(Arrays.asList(c.getSuperclass().getDeclaredFields()));
+            fields.addAll(superFields);
+
+            for (Field f : fields) {
 
                 this.setPathVariable(f, object, pathVariable);
                 this.setParameterValue(f, object, webRequest);
@@ -131,9 +134,9 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
 
         if (jsonHeader != null) {
             String jsonKey = jsonHeader.value();
-            String accessUser = nativeWebRequest.getHeader(jsonKey);
+            String headerValue = nativeWebRequest.getHeader(jsonKey);
             f.setAccessible(true);
-            f.set(o, accessUser);
+            f.set(o, headerValue);
         }
     }
 
