@@ -1,4 +1,4 @@
-package io.github.sweehaw.audit.enums;
+package io.github.sweehaw.auditsupports.enums;
 
 /**
  * @author sweehaw

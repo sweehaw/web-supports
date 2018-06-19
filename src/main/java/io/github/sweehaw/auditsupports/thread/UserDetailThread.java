@@ -1,6 +1,6 @@
-package io.github.sweehaw.audit.thread;
+package io.github.sweehaw.auditsupports.thread;
 
-import io.github.sweehaw.audit.tools.AuditUtils;
+import io.github.sweehaw.auditsupports.tools.AuditUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.CrudRepository;
