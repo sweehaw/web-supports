@@ -12,7 +12,7 @@
 
     <groupId>io.github.sweehaw</groupId>
     <artifactId>web-supports</artifactId>
-    <version>0.0.15</version>
+    <version>0.0.16</version>
     <packaging>jar</packaging>
     <url>https://github.com/sweehaw/web-supports</url>
 
@@ -96,6 +96,12 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-dynamodb</artifactId>
             <version>1.11.341</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.21</version>
         </dependency>
 
     </dependencies>
