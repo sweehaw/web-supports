@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.sweehaw.auditsupports.annotation.*;
 import io.github.sweehaw.auditsupports.enums.AuditAction;
+import io.github.sweehaw.websupports.tools.UserAgentTools;
 import io.github.sweehaw.websupports.util.CommUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.CrudRepository;
@@ -137,7 +138,8 @@ public class AuditUtils {
                         break;
 
                     case USER_ACCESS_BROWSER:
-                        f.set(o, map.get(AuditAction.USER_ACCESS_BROWSER));
+                        UserAgentTools userAgentTools = new UserAgentTools(map.get(AuditAction.USER_ACCESS_BROWSER));
+                        f.set(o, userAgentTools.getBrowser());
                         break;
 
                     case USER_ACCESS_URL:
