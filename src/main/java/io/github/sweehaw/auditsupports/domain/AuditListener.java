@@ -1,10 +1,10 @@
-package io.github.sweehaw.audit.domain;
+package io.github.sweehaw.auditsupports.domain;
 
-import io.github.sweehaw.audit.enums.AuditAction;
-import io.github.sweehaw.audit.annotation.CreatedDate;
-import io.github.sweehaw.audit.annotation.LastModifiedBy;
-import io.github.sweehaw.audit.annotation.LastModifiedDate;
-import io.github.sweehaw.audit.tools.AuditUtils;
+import io.github.sweehaw.auditsupports.enums.AuditAction;
+import io.github.sweehaw.auditsupports.annotation.CreatedDate;
+import io.github.sweehaw.auditsupports.annotation.LastModifiedBy;
+import io.github.sweehaw.auditsupports.annotation.LastModifiedDate;
+import io.github.sweehaw.auditsupports.tools.AuditUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

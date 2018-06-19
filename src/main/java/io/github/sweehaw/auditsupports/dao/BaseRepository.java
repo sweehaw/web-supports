@@ -1,4 +1,4 @@
-package io.github.sweehaw.audit.dao;
+package io.github.sweehaw.auditsupports.dao;
 
 /**
  * @author sweehaw

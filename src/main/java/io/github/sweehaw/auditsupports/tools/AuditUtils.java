@@ -1,9 +1,9 @@
-package io.github.sweehaw.audit.tools;
+package io.github.sweehaw.auditsupports.tools;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.sweehaw.audit.annotation.*;
-import io.github.sweehaw.audit.enums.AuditAction;
+import io.github.sweehaw.auditsupports.annotation.*;
+import io.github.sweehaw.auditsupports.enums.AuditAction;
 import io.github.sweehaw.websupports.util.CommUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.CrudRepository;

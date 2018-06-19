@@ -1,4 +1,4 @@
-package io.github.sweehaw.audit.annotation;
+package io.github.sweehaw.auditsupports.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 
