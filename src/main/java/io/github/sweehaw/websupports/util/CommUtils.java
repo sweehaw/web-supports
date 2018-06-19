@@ -82,4 +82,8 @@ public class CommUtils {
     public static String randomAlphanumeric() {
         return RandomStringUtils.randomAlphanumeric(8);
     }
+
+    public static String formatDate(String pattern, Date date) {
+        return new SimpleDateFormat(pattern).format(date);
+    }
 }
