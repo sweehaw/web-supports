@@ -3,8 +3,9 @@ package io.github.sweehaw.websupports.filter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.sweehaw.websupports.util.CommUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -15,15 +16,18 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author sweehaw
  */
+@Slf4j
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Component
 public class HttpRequestFilter extends GenericFilterBean {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    private List<String> filterList;
     private boolean printRequest;
     private boolean printResponse;
 
@@ -38,21 +42,25 @@ public class HttpRequestFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        LoggerRequestWrapper loggerRequestWrapper = new LoggerRequestWrapper(request);
-        LoggerRequestMessage loggerRequestMessage = new LoggerRequestMessage();
-        LoggerResponseWrapper loggerResponseWrapper = new LoggerResponseWrapper(response);
+        if (this.checkUrlPattern(request.getRequestURI())) {
 
-        String randomString = this.getRandomString(request);
-        this.requestLogger(loggerRequestMessage, loggerRequestWrapper, randomString);
+            LoggerRequestWrapper loggerRequestWrapper = new LoggerRequestWrapper(request);
+            LoggerRequestMessage loggerRequestMessage = new LoggerRequestMessage();
+            LoggerResponseWrapper loggerResponseWrapper = new LoggerResponseWrapper(response);
 
-        loggerRequestWrapper.resetInputStream();
-        if (!this.isRandomStringExist(request)) {
-            loggerRequestWrapper.addRandomString(randomString);
+            String randomString = this.getRandomString(request);
+            this.requestLogger(loggerRequestMessage, loggerRequestWrapper, randomString);
+
+            loggerRequestWrapper.resetInputStream();
+            if (!this.isRandomStringExist(request)) {
+                loggerRequestWrapper.addRandomString(randomString);
+            }
+
+            chain.doFilter(loggerRequestWrapper, loggerResponseWrapper);
+            this.responseLogger(response, loggerResponseWrapper, randomString);
+        } else {
+            chain.doFilter(request, response);
         }
-
-        chain.doFilter(loggerRequestWrapper, loggerResponseWrapper);
-        this.responseLogger(response, loggerResponseWrapper, randomString);
-
     }
 
     private void requestLogger(LoggerRequestMessage loggerRequestMessage, LoggerRequestWrapper loggerRequestWrapper, String randomString) throws JsonProcessingException {
@@ -67,14 +75,14 @@ public class HttpRequestFilter extends GenericFilterBean {
             Object param = loggerRequestMessage.getParam(loggerRequestWrapper);
             Object body = loggerRequestMessage.getBody(loggerRequestWrapper);
 
-            this.logger.info("");
-            this.logger.info("{} ====================================== Incoming ======================================", randomString);
-            this.logger.info("{} U: {}", randomString, url);
-            this.logger.info("{} M: {}", randomString, method);
-            this.logger.info("{} I: {}", randomString, ip);
-            this.logger.info("{} H: {}", randomString, m.writeValueAsString(header));
-            this.logger.info("{} P: {}", randomString, param);
-            this.logger.info("{} B: {}", randomString, body instanceof String ? body : m.writeValueAsString(body));
+            log.info("");
+            log.info("{} ====================================== Incoming ======================================", randomString);
+            log.info("{} U: {}", randomString, url);
+            log.info("{} M: {}", randomString, method);
+            log.info("{} I: {}", randomString, ip);
+            log.info("{} H: {}", randomString, m.writeValueAsString(header));
+            log.info("{} P: {}", randomString, param);
+            log.info("{} B: {}", randomString, body instanceof String ? body : m.writeValueAsString(body));
         }
     }
 
@@ -83,7 +91,7 @@ public class HttpRequestFilter extends GenericFilterBean {
         if (this.printResponse) {
             loggerResponseWrapper.flushBuffer();
             byte[] copy = loggerResponseWrapper.getCopy();
-            this.logger.info("{} R: {}", randomString, new String(copy, response.getCharacterEncoding()));
+            log.info("{} R: {}", randomString, new String(copy, response.getCharacterEncoding()));
         }
     }
 
@@ -95,5 +103,22 @@ public class HttpRequestFilter extends GenericFilterBean {
 
     private boolean isRandomStringExist(HttpServletRequest request) {
         return request.getHeader("randomString") != null;
+    }
+
+    private boolean checkUrlPattern(String uri) {
+        return this.filterList
+                .stream()
+                .anyMatch(pattern -> this.filterUrl(uri, pattern));
+    }
+
+    private boolean filterUrl(String uri, String pattern) {
+
+        String oneStar = "[a-zA-Z0-9_]*";
+        String twoStar = "[a-zA-Z0-9_/]+";
+
+        pattern = pattern.replace("*", oneStar);
+        pattern = pattern.replace("**", twoStar);
+
+        return uri.matches(pattern);
     }
 }
