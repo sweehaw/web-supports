@@ -3,8 +3,6 @@ package io.github.sweehaw.websupports.filter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.sweehaw.websupports.util.CommUtils;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -16,14 +14,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author sweehaw
  */
 @Slf4j
-@Data
-@EqualsAndHashCode(callSuper = true)
 @Component
 public class HttpRequestFilter extends GenericFilterBean {
 
@@ -34,6 +31,14 @@ public class HttpRequestFilter extends GenericFilterBean {
     public HttpRequestFilter(boolean printRequest, boolean printResponse) {
         this.printRequest = printRequest;
         this.printResponse = printResponse;
+    }
+
+    public void setFilterList(String... filterList) {
+        this.filterList = Arrays.asList(filterList);
+    }
+
+    public void setFilterList(List<String> filterList) {
+        this.filterList = filterList;
     }
 
     @Override
