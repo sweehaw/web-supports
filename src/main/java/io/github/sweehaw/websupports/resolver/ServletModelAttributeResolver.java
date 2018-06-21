@@ -2,6 +2,7 @@ package io.github.sweehaw.websupports.resolver;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.sweehaw.websupports.annotation.JsonArg;
 import io.github.sweehaw.websupports.annotation.JsonHeader;
@@ -86,7 +87,11 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
                 jsonBody = CommUtils.getStringFromInputStream(servletRequest.getInputStream());
                 webRequest.setAttribute(JSONBODY_ATTRIBUTE, jsonBody, NativeWebRequest.SCOPE_REQUEST);
             }
-            return new ObjectMapper().readValue(jsonBody, o.getClass());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+            return objectMapper.readValue(jsonBody, o.getClass());
         } catch (Exception ex) {
             return o;
         }
