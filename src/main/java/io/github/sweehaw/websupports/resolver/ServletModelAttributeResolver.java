@@ -86,7 +86,7 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
                 jsonBody = CommUtils.getStringFromInputStream(servletRequest.getInputStream());
                 webRequest.setAttribute(JSONBODY_ATTRIBUTE, jsonBody, NativeWebRequest.SCOPE_REQUEST);
             }
-            return new ObjectMapper().readValue(jsonBody, parameter.getParameterType());
+            return new ObjectMapper().readValue(jsonBody, o.getClass());
         } catch (Exception ex) {
             return o;
         }
