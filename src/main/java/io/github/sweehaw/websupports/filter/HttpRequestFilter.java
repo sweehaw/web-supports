@@ -14,6 +14,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import java.util.List;
 @Component
 public class HttpRequestFilter extends GenericFilterBean {
 
-    private List<String> filterList;
+    private List<String> filterList = new ArrayList<>();
     private boolean printRequest;
     private boolean printResponse;
 
@@ -34,11 +35,11 @@ public class HttpRequestFilter extends GenericFilterBean {
     }
 
     public void setFilterList(String... filterList) {
-        this.filterList = Arrays.asList(filterList);
+        this.filterList.addAll(Arrays.asList(filterList));
     }
 
     public void setFilterList(List<String> filterList) {
-        this.filterList = filterList;
+        this.filterList.addAll(filterList);
     }
 
     @Override
@@ -111,7 +112,7 @@ public class HttpRequestFilter extends GenericFilterBean {
     }
 
     private boolean checkUrlPattern(String uri) {
-        return this.filterList
+        return this.filterList.size() == 0 || this.filterList
                 .stream()
                 .anyMatch(pattern -> this.filterUrl(uri, pattern));
     }
