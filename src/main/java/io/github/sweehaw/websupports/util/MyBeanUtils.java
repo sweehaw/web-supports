@@ -2,14 +2,13 @@ package io.github.sweehaw.websupports.util;
 
 
 import io.github.sweehaw.auditsupports.annotation.CreatedDate;
-import io.github.sweehaw.auditsupports.annotation.LastModifiedBy;
 import io.github.sweehaw.auditsupports.annotation.LastModifiedDate;
+import io.github.sweehaw.auditsupports.tools.AuditUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 
 import javax.persistence.Id;
-import java.beans.PropertyDescriptor;
+import javax.persistence.Version;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,19 +23,19 @@ public class MyBeanUtils extends BeanUtils {
 
     private static String[] getNullPropertyNames(Object source) {
 
-        final BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
         Set<String> emptyNames = new HashSet<>();
 
-        for (PropertyDescriptor p : pds) {
+        for (Field f : AuditUtils.getSuperClass(source)) {
 
-            LastModifiedDate lastModifiedDate = p.getReadMethod() != null ? p.getReadMethod().getAnnotation(LastModifiedDate.class) : null;
-            LastModifiedBy lastModifiedBy = p.getReadMethod() != null ? p.getReadMethod().getAnnotation(LastModifiedBy.class) : null;
-            CreatedDate createdDate = p.getReadMethod() != null ? p.getReadMethod().getAnnotation(CreatedDate.class) : null;
-            Id id = p.getReadMethod() != null ? p.getReadMethod().getAnnotation(Id.class) : null;
+            LastModifiedDate lastModifiedDate = f.getAnnotation(LastModifiedDate.class);
+            CreatedDate createdDate = f.getAnnotation(CreatedDate.class);
+            Version version = f.getAnnotation(Version.class);
+            Id id = f.getAnnotation(Id.class);
 
-            if (lastModifiedDate != null || lastModifiedBy != null || createdDate != null || id != null) {
-                emptyNames.add(p.getName());
+            String fieldName = f.getName();
+
+            if (lastModifiedDate != null || createdDate != null || version != null || id != null) {
+                emptyNames.add(fieldName);
             }
         }
 
