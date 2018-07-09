@@ -122,8 +122,8 @@ public class HttpRequestFilter extends GenericFilterBean {
         String oneStar = "[a-zA-Z0-9_]*";
         String twoStar = "[a-zA-Z0-9_/]+";
 
-        pattern = pattern.replace("*", oneStar);
         pattern = pattern.replace("**", twoStar);
+        pattern = pattern.replace("*", oneStar);
 
         return uri.matches(pattern);
     }
