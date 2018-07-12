@@ -12,7 +12,7 @@
 
     <groupId>io.github.sweehaw</groupId>
     <artifactId>web-supports</artifactId>
-    <version>0.0.27</version>
+    <version>0.0.28</version>
     <packaging>jar</packaging>
     <url>https://github.com/sweehaw/web-supports</url>
 

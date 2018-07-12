@@ -17,6 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -130,6 +131,10 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
             HttpServletRequest request = (HttpServletRequest) nativeWebRequest.getNativeRequest();
             f.setAccessible(true);
             f.set(o, request);
+        } else if (f.getType().isAssignableFrom(HttpServletResponse.class)) {
+            HttpServletResponse response = (HttpServletResponse) nativeWebRequest.getNativeResponse();
+            f.setAccessible(true);
+            f.set(o, response);
         }
     }
 
