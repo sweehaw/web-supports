@@ -24,7 +24,7 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
         List<String> list = request.getHeaders().getValuesAsList("randomString");
 
-        String randomString = !list.isEmpty() ? list.get(0) : RandomStringUtils.randomNumeric(8);
+        String randomString = !list.isEmpty() ? list.get(0) : RandomStringUtils.randomAlphanumeric(8);
         this.logRequest(request, body, randomString);
 
         ClientHttpResponse response = execution.execute(request, body);
