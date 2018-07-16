@@ -47,16 +47,16 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         String statusCode = response.getRawStatusCode() + "";
         String statusText = response.getStatusText();
 
-        StringBuilder inputStringBuilder = new StringBuilder();
+        StringBuilder bf = new StringBuilder();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"));
         String line = bufferedReader.readLine();
         while (line != null) {
-            inputStringBuilder.append(line);
-            inputStringBuilder.append('\n');
+            bf.append(bf.length() > 0 ? '\n' : "");
+            bf.append(line);
             line = bufferedReader.readLine();
         }
 
         log.info("{} S: {} {}", randomString, statusCode, statusText);
-        log.info("{} R: {}", randomString, inputStringBuilder.toString());
+        log.info("{} R: {}", randomString, bf.toString());
     }
 }
