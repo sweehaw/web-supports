@@ -6,7 +6,6 @@ import ch.qos.logback.core.Layout;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
