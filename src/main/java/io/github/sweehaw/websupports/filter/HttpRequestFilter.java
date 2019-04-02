@@ -26,7 +26,7 @@ import java.util.List;
 public class HttpRequestFilter extends GenericFilterBean {
 
     private List<String> filterList = new ArrayList<>();
-    private List<String> responseFilterList = new ArrayList<>();
+    private List<String> excludeList = new ArrayList<>();
     private boolean printRequest;
     private boolean printResponse;
 
@@ -43,12 +43,12 @@ public class HttpRequestFilter extends GenericFilterBean {
         this.filterList.addAll(filterList);
     }
 
-    public void setResponseFilterList(String... responseFilterList) {
-        this.responseFilterList.addAll(Arrays.asList(responseFilterList));
+    public void setExcludeList(String... responseFilterList) {
+        this.excludeList.addAll(Arrays.asList(responseFilterList));
     }
 
-    public void setResponseFilterList(List<String> responseFilterList) {
-        this.responseFilterList.addAll(responseFilterList);
+    public void setExcludeList(List<String> responseFilterList) {
+        this.excludeList.addAll(responseFilterList);
     }
 
     @Override
@@ -57,7 +57,9 @@ public class HttpRequestFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        if (this.checkUrlPattern(request.getRequestURI(), this.filterList)) {
+        if (this.checkUrlPattern(request.getRequestURI(), this.excludeList)) {
+            chain.doFilter(request, response);
+        } else if (this.checkUrlPattern(request.getRequestURI(), this.filterList)) {
 
             LoggerRequestWrapper loggerRequestWrapper = new LoggerRequestWrapper(request);
             LoggerRequestMessage loggerRequestMessage = new LoggerRequestMessage();
@@ -72,7 +74,7 @@ public class HttpRequestFilter extends GenericFilterBean {
             }
 
             chain.doFilter(loggerRequestWrapper, loggerResponseWrapper);
-            this.responseLogger(request, response, loggerResponseWrapper, randomString);
+            this.responseLogger(response, loggerResponseWrapper, randomString);
         } else {
             chain.doFilter(request, response);
         }
@@ -101,9 +103,9 @@ public class HttpRequestFilter extends GenericFilterBean {
         }
     }
 
-    private void responseLogger(HttpServletRequest request, HttpServletResponse response, LoggerResponseWrapper loggerResponseWrapper, String randomString) throws IOException {
+    private void responseLogger(HttpServletResponse response, LoggerResponseWrapper loggerResponseWrapper, String randomString) throws IOException {
 
-        if (this.printResponse && this.checkUrlPattern(request.getRequestURI(), this.responseFilterList)) {
+        if (this.printResponse) {
             loggerResponseWrapper.flushBuffer();
             byte[] copy = loggerResponseWrapper.getCopy();
             log.info("{} R: {}", randomString, new String(copy, response.getCharacterEncoding()));
@@ -120,8 +122,8 @@ public class HttpRequestFilter extends GenericFilterBean {
         return request.getHeader("randomString") != null;
     }
 
-    private boolean checkUrlPattern(String uri, List<String> filterList) {
-        return filterList.size() == 0 || filterList
+    private boolean checkUrlPattern(String uri, List<String> list) {
+        return list.size() == 0 || list
                 .stream()
                 .anyMatch(pattern -> this.filterUrl(uri, pattern));
     }
