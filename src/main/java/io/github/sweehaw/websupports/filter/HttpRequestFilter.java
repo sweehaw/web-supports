@@ -26,6 +26,7 @@ import java.util.List;
 public class HttpRequestFilter extends GenericFilterBean {
 
     private List<String> filterList = new ArrayList<>();
+    private List<String> excludeList = new ArrayList<>();
     private boolean printRequest;
     private boolean printResponse;
 
@@ -48,7 +49,9 @@ public class HttpRequestFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        if (this.checkUrlPattern(request.getRequestURI())) {
+        if (this.checkUrlPattern(request.getRequestURI(), this.excludeList)) {
+            chain.doFilter(request, response);
+        } else if (this.checkUrlPattern(request.getRequestURI(), this.filterList)) {
 
             LoggerRequestWrapper loggerRequestWrapper = new LoggerRequestWrapper(request);
             LoggerRequestMessage loggerRequestMessage = new LoggerRequestMessage();
@@ -111,8 +114,8 @@ public class HttpRequestFilter extends GenericFilterBean {
         return request.getHeader("randomString") != null;
     }
 
-    private boolean checkUrlPattern(String uri) {
-        return this.filterList.size() == 0 || this.filterList
+    private boolean checkUrlPattern(String uri, List<String> list) {
+        return list.size() == 0 || list
                 .stream()
                 .anyMatch(pattern -> this.filterUrl(uri, pattern));
     }
