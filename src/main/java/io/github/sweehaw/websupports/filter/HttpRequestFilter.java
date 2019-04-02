@@ -43,6 +43,14 @@ public class HttpRequestFilter extends GenericFilterBean {
         this.filterList.addAll(filterList);
     }
 
+    public void setExcludeList(String... responseFilterList) {
+        this.excludeList.addAll(Arrays.asList(responseFilterList));
+    }
+
+    public void setExcludeList(List<String> responseFilterList) {
+        this.excludeList.addAll(responseFilterList);
+    }
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
