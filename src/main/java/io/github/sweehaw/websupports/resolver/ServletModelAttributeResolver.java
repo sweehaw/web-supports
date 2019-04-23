@@ -61,6 +61,7 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
                 this.setParameterValue(f, object, webRequest);
                 this.setServletRequest(f, object, webRequest);
                 this.setHeaderValue(f, object, webRequest);
+                ResolverTools.setToUpperCase(f, object);
             }
 
             return object;
