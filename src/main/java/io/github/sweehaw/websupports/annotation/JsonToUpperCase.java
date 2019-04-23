@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
  * @author sweehaw
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target(ElementType.FIELD)
 public @interface JsonToUpperCase {
 }
