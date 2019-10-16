@@ -1,6 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 /.idea/
-/websupports.iml
+/*.iml
 /web-supports.iml
 /target/
 /pom.xml.releaseBackup
