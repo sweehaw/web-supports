@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author sweehaw
@@ -50,10 +53,31 @@ class LoggerRequestMessage {
 
     Object getBody(LoggerRequestWrapper request) {
 
+        String line = "";
         try {
-            String line = IOUtils.toString(request.getReader());
+            line = IOUtils.toString(request.getReader());
             return new ObjectMapper().readValue(line, HashMap.class);
         } catch (IOException e) {
+            return line.isEmpty() ? line : getSerializeBody(line);
+        }
+    }
+
+    String getSerializeBody(String line) {
+        try {
+            Map<String, String> map = new HashMap<>();
+            String ss = URLDecoder.decode(line, "UTF-8");
+            String[] params = ss.split("&");
+
+            Arrays.asList(params).forEach(p -> {
+
+                String[] param = p.split("=");
+                String k = param.length > 0 ? param[0] : "";
+                String v = param.length > 1 ? param[1] : "";
+
+                map.put(k, v);
+            });
+            return new ObjectMapper().writeValueAsString(map);
+        } catch (Exception ex) {
             return "";
         }
     }
