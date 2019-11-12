@@ -54,15 +54,23 @@ class LoggerRequestMessage {
     Object getBody(LoggerRequestWrapper request) {
 
         String line = "";
+        String[] excludeParam = new String[]{"password", "secureCode"};
+
         try {
             line = IOUtils.toString(request.getReader());
-            return new ObjectMapper().readValue(line, HashMap.class);
+            HashMap map = new ObjectMapper().readValue(line, HashMap.class);
+            map.forEach((k, v) -> {
+                if (Arrays.stream(excludeParam).anyMatch(s -> s.equalsIgnoreCase(k.toString()))) {
+                    map.remove(k);
+                }
+            });
+            return map;
         } catch (IOException e) {
-            return line.isEmpty() ? line : getSerializeBody(line);
+            return line.isEmpty() ? line : getSerializeBody(line, excludeParam);
         }
     }
 
-    String getSerializeBody(String line) {
+    String getSerializeBody(String line, String[] excludeParam) {
         try {
             Map<String, String> map = new HashMap<>();
             String ss = URLDecoder.decode(line, "UTF-8");
@@ -74,7 +82,9 @@ class LoggerRequestMessage {
                 String k = param.length > 0 ? param[0] : "";
                 String v = param.length > 1 ? param[1] : "";
 
-                map.put(k, v);
+                if (Arrays.stream(excludeParam).noneMatch(s -> s.equalsIgnoreCase(k))) {
+                    map.put(k, v);
+                }
             });
             return new ObjectMapper().writeValueAsString(map);
         } catch (Exception ex) {

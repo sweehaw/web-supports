@@ -59,10 +59,17 @@ public class PagingSpecificationTools {
             String k = entry.getKey();
             Object v = entry.getValue();
 
-            specifications.add(v instanceof PagingDateCriteria
-                    ? new PagingSpecification(k, "~", v)
-                    : new PagingSpecification(k, ":", v)
-            );
+            PagingSpecification ps;
+            if (v instanceof PagingDateCriteria) {
+                ps = new PagingSpecification(k, "~", v);
+            } else if (v instanceof OperatorCriteria) {
+                OperatorCriteria oc = (OperatorCriteria) v;
+                ps = new PagingSpecification(k, oc.getOperator(), oc.getValue());
+            } else {
+                ps = new PagingSpecification(k, ":", v);
+            }
+
+            specifications.add(ps);
         }
 
         return specifications;
