@@ -95,7 +95,6 @@ public class ServletModelAttributeResolver implements HandlerMethodArgumentResol
 
             return objectMapper.readValue(jsonBody, o.getClass());
         } catch (Exception ex) {
-            this.logger.error(ex.toString(), ex);
             return o;
         }
     }
