@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author sweehaw
@@ -59,12 +60,13 @@ class LoggerRequestMessage {
         try {
             line = IOUtils.toString(request.getReader());
             HashMap map = new ObjectMapper().readValue(line, HashMap.class);
+            HashMap m = new HashMap<>(0);
             map.forEach((k, v) -> {
-                if (Arrays.stream(excludeParam).anyMatch(s -> s.equalsIgnoreCase(k.toString()))) {
-                    map.remove(k);
+                if (!Arrays.stream(excludeParam).anyMatch(s -> s.equalsIgnoreCase(k.toString()))) {
+                    m.put(k, v);
                 }
             });
-            return map;
+            return m;
         } catch (IOException e) {
             return line.isEmpty() ? line : getSerializeBody(line, excludeParam);
         }
