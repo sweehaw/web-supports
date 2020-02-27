@@ -66,6 +66,6 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
     }
 
     private void logException(Exception ex, String randomString) {
-        log.error("{} E: {}", randomString, ex);
+        log.error("{} E: {}", randomString, ex.toString(), ex);
     }
 }
