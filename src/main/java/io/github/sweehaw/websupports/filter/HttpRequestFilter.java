@@ -130,8 +130,8 @@ public class HttpRequestFilter extends GenericFilterBean {
 
     private boolean filterUrl(String uri, String pattern) {
 
-        String oneStar = "[a-zA-Z0-9_]*";
-        String twoStar = "[a-zA-Z0-9_/]+";
+        String oneStar = "[a-zA-Z0-9_-]*";
+        String twoStar = "[a-zA-Z0-9_/-]+";
 
         pattern = pattern.replace("**", twoStar);
         pattern = pattern.replace("*", oneStar);

@@ -27,10 +27,15 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
         String randomString = !list.isEmpty() ? list.get(0) : RandomStringUtils.randomAlphanumeric(8);
         this.logRequest(request, body, randomString);
 
-        ClientHttpResponse response = execution.execute(request, body);
-        this.logResponse(response, randomString);
+        try {
+            ClientHttpResponse response = execution.execute(request, body);
+            this.logResponse(response, randomString);
 
-        return response;
+            return response;
+        } catch (Exception ex) {
+            this.logException(ex, randomString);
+            throw ex;
+        }
     }
 
     private void logRequest(HttpRequest request, byte[] body, String randomString) throws UnsupportedEncodingException {
@@ -58,5 +63,9 @@ public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
         log.info("{} S: {} {}", randomString, statusCode, statusText);
         log.info("{} R: {}", randomString, bf.toString());
+    }
+
+    private void logException(Exception ex, String randomString) {
+        log.error("{} E: {}", randomString, ex.toString(), ex);
     }
 }

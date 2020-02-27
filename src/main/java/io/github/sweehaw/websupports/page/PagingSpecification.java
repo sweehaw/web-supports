@@ -48,8 +48,15 @@ public class PagingSpecification implements Specification<Object> {
                         ? builder.like(path, "%" + this.value + "%")
                         : builder.equal(path, this.value);
             case "~":
-                PagingDateCriteria dateCriteria = (PagingDateCriteria) this.value;
-                return builder.between(path, dateCriteria.getStartDate(), dateCriteria.getEndDate());
+                if (this.value instanceof PagingDecimalCriteria) {
+                    PagingDecimalCriteria decimalCriteria = (PagingDecimalCriteria) this.value;
+                    return builder.between(path, decimalCriteria.getStartBigDecimal(), decimalCriteria.getEndOfBigDecimal());
+
+                } else if (this.value instanceof PagingDateCriteria) {
+                    PagingDateCriteria dateCriteria = (PagingDateCriteria) this.value;
+                    return builder.between(path, dateCriteria.getStartDate(), dateCriteria.getEndDate());
+
+                }
 
             default:
                 return null;
