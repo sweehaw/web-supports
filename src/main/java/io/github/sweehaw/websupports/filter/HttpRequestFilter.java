@@ -3,7 +3,11 @@ package io.github.sweehaw.websupports.filter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.sweehaw.websupports.util.CommUtils;
+import io.github.sweehaw.websupports.util.ISOUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -17,6 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author sweehaw
@@ -91,6 +97,8 @@ public class HttpRequestFilter extends GenericFilterBean {
             Object header = loggerRequestMessage.getHeader(loggerRequestWrapper);
             Object param = loggerRequestMessage.getParam(loggerRequestWrapper);
             Object body = loggerRequestMessage.getBody(loggerRequestWrapper);
+            Object body1 = body instanceof String ? body : m.writeValueAsString(body);
+            body1 = hasHTMLTags(body1.toString()) ? protectHtmlValue(body1.toString()) : body1;
 
             log.info("");
             log.info("{} ====================================== Incoming ======================================", randomString);
@@ -99,7 +107,7 @@ public class HttpRequestFilter extends GenericFilterBean {
             log.info("{} I: {}", randomString, ip);
             log.info("{} H: {}", randomString, m.writeValueAsString(header));
             log.info("{} P: {}", randomString, param);
-            log.info("{} B: {}", randomString, body instanceof String ? body : m.writeValueAsString(body));
+            log.info("{} B: {}", randomString, body1);
         }
     }
 
@@ -137,5 +145,23 @@ public class HttpRequestFilter extends GenericFilterBean {
         pattern = pattern.replace("*", oneStar);
 
         return uri.matches(pattern);
+    }
+
+    private boolean hasHTMLTags(String text) {
+        String htmlPatten = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
+        Pattern pattern = Pattern.compile(htmlPatten);
+        Matcher matcher = pattern.matcher(text);
+        return matcher.find();
+    }
+
+    private String protectHtmlValue(String html) {
+
+        Document doc = Jsoup.parse(html);
+        Elements elements = doc.select("input[protected=true]");
+        elements.forEach(e -> {
+            String val = e.val();
+            e.val(ISOUtils.protect(val).replace("_", "*"));
+        });
+        return doc.toString();
     }
 }
